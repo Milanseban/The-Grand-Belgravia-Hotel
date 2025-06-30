@@ -1,22 +1,20 @@
 {
+  "version": 2,
   "builds": [
     {
       "src": "hotel_backend/wsgi.py",
       "use": "@vercel/python",
-      "config": {
-        "maxLambdaSize": "15mb",
-        "runtime": "python3.9"
-      }
+      "config": { "maxLambdaSize": "15mb", "runtime": "python3.9" }
     },
     {
-        "src": "staticfiles_build/**",
-        "use": "@vercel/static"
+      "src": "staticfiles/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
     {
       "src": "/static/(.*)",
-      "dest": "/staticfiles_build/$1"
+      "dest": "/staticfiles/$1"
     },
     {
       "src": "/(.*)",
