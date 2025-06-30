@@ -1,11 +1,9 @@
-# hotel_backend/settings.py
-
 from pathlib import Path
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 ENVIRONMENT = os.environ.get('ENVIRONMENT', 'development')
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-development-fallback-for-local-use-only')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-development-fallback-key-for-local-use-only')
 DEBUG = ENVIRONMENT == 'development'
 ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1']
 
@@ -66,7 +64,7 @@ USE_I18N = True
 USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'assets')]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles_build") # Vercel will use this folder
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
