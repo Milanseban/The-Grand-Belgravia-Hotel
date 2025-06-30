@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - The Grand Belgravia</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Raleway:wght@300;400;500&display=swap');
+        body{margin:0;font-family:'Raleway',sans-serif;background-color:#f4f4f4;color:#333;line-height:1.6;font-weight:300;}
+        h1,h2,h3,h4{font-family:'Playfair+Display',serif;color:#1a2938;font-weight:700}
+        .container{max-width:1200px;margin:auto;padding:0 20px}
+        .navbar{background:rgba(255,255,255,0.9);padding:1.5rem 2rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.1);display:flex;justify-content:space-between;align-items:center}
+        .navbar .logo{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#1a2938;text-decoration:none}
+        .navbar nav{display:flex;align-items:center}
+        .navbar nav a{color:#333;text-decoration:none;margin:0 15px;font-weight:400;transition:color 0.3s}
+        .navbar nav a:hover{color:#c9a96d}
+        .navbar .nav-buttons{display:flex;align-items:center;gap:1rem}
+        .navbar .cta-button{border:1px solid #c9a96d;padding:10px 20px;color:#c9a96d;text-decoration:none;transition:background-color 0.3s,color 0.3s;border-radius:5px}
+        .navbar .cta-button:hover{background-color:#c9a96d;color:#fff}
+        .navbar .account-link, .navbar .login-button {
+            background:none;
+            border:none;
+            color:#333;
+            font-family:'Raleway',sans-serif;
+            font-size:1rem;
+            font-weight:500;
+            cursor:pointer;
+            padding:10px 15px;
+            text-decoration:none;
+            transition:color 0.3s;
+        }
+        .navbar .account-link:hover, .navbar .login-button:hover {color:#c9a96d}
+        .account-header { background: #fff; padding: 4rem 2rem; border-bottom: 1px solid #eee; }
+        .account-header h1 { margin: 0; font-size: 2.8rem; }
+        .account-container { padding: 4rem 0; }
+        .account-layout { display: flex; gap: 3rem; align-items: flex-start; flex-wrap: wrap;}
+        .account-nav { flex: 0 0 250px; background: #fff; padding: 1.5rem; box-shadow: 0 5px 25px rgba(0,0,0,0.05); border-radius: 5px; }
+        .account-nav-link { display: block; padding: 1rem 1.5rem; color: #333; text-decoration: none; font-weight: 500; border-radius: 5px; margin-bottom: 0.5rem; cursor: pointer;}
+        .account-nav-link.active, .account-nav-link:hover { background-color: #1a2938; color: #fff; }
+        .account-nav hr { border: none; border-top: 1px solid #eee; margin: 1rem 0;}
+        .account-content { flex: 1; min-width: 300px;}
+        .content-panel { display: none; }
+        .content-panel.active { display: block; }
+        .booking-card { background: #fff; margin-bottom: 2rem; box-shadow: 0 5px 25px rgba(0,0,0,0.05); border-radius: 5px; overflow: hidden; display: flex; flex-wrap: wrap; }
+        .booking-card-image { flex: 0 0 220px; min-height: 220px; background-color: #eee; }
+        .booking-card-image img { width: 100%; height: 100%; object-fit: cover; }
+        .booking-card-details { padding: 2rem; flex: 1; min-width: 250px; }
+        .booking-card-details h3 { margin-top: 0; }
+        .booking-card-details p { margin: 0.5rem 0; }
+        .booking-card-actions { padding: 2rem; border-left: 1px solid #eee; display: flex; flex-direction: column; justify-content: center; gap: 1rem; }
+        .action-button { background: none; border: 1px solid #ddd; padding: 0.75rem 1rem; border-radius: 5px; cursor: pointer; font-family: 'Raleway', sans-serif; font-weight: 500; transition: all 0.2s; }
+        .action-button.cancel { border-color: #c0392b; color: #c0392b; }
+        .action-button:hover { background: #f4f4f4; }
+        .action-button.cancel:hover { background: #c0392b; color: #fff; }
+        .form-group { display: flex; flex-direction: column; margin-bottom: 1.5rem; }
+        .form-group label { margin-bottom: 0.5rem; font-weight: 500; color: #555; }
+        .form-group input { padding: 0.8rem; border: 1px solid #ddd; border-radius: 5px; font-size: 1rem; font-family: 'Raleway', sans-serif; }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <a href="/" class="logo">The Grand Belgravia</a>
+        <nav>
+            <a href="/#about">About</a>
+            <a href="/rooms/">Rooms</a>
+            <a href="/dining/">Dining</a>
+            <a href="/spa/">Spa</a>
+            <a href="/#contact">Contact</a>
+        </nav>
+        <div class="nav-buttons">
+            <div id="user-actions">
+                </div>
+            <a href="/booking/" class="cta-button">Book Now</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="account-header">
+            <div class="container">
+                <h1>Welcome Back, <span id="user-name">Guest</span></h1>
+            </div>
+        </section>
+
+        <section class="account-container">
+            <div class="container account-layout">
+                <aside class="account-nav">
+                    <a class="account-nav-link active" data-target="upcoming">Upcoming Bookings</a>
+                    <a class="account-nav-link" data-target="past">Past Bookings</a>
+                    <a class="account-nav-link" data-target="profile">Profile</a>
+                    <hr>
+                    <a href="/" class="account-nav-link">Return to Home</a>
+                    <a class="account-nav-link" id="logout-button">Logout</a>
+                </aside>
+
+                <section class="account-content">
+                    <div id="upcoming" class="content-panel active">
+                        <h2>Upcoming Bookings</h2>
+                        </div>
+                    <div id="past" class="content-panel">
+                        <h2>Past Bookings</h2>
+                        </div>
+                    <div id="profile" class="content-panel">
+                        <h2>Profile</h2>
+                        <form id="profile-form">
+                            <div class="form-group">
+                                <label for="profile-username">Username</label>
+                                <input type="text" id="profile-username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="profile-email">Email Address</label>
+                                <input type="email" id="profile-email" required>
+                            </div>
+                            <button type="submit" class="action-button" style="width: 200px;">Save Changes</button>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userActionsContainer = document.getElementById('user-actions');
+            const navLinks = document.querySelectorAll('.account-nav-link');
+            const contentPanels = document.querySelectorAll('.content-panel');
+            const logoutButton = document.getElementById('logout-button');
+            const welcomeMessage = document.getElementById('user-name');
+            const accountContent = document.querySelector('.account-content');
+
+            const profileForm = document.getElementById('profile-form');
+            const profileUsernameInput = document.getElementById('profile-username');
+            const profileEmailInput = document.getElementById('profile-email');
+
+            const getCookie = (name) => {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            };
+            const csrftoken = getCookie('csrftoken');
+            const token = localStorage.getItem('authToken');
+
+            const updateHeader = () => {
+                if (token) {
+                    userActionsContainer.innerHTML = `<a href="/account/" class="account-link">My Account</a>`;
+                } else {
+                    window.location.href = '/';
+                }
+            };
+
+            const fetchProfile = () => {
+                fetch('/api/profile/', { headers: { 'Authorization': `Token ${token}` } })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.username) {
+                        profileUsernameInput.value = data.username;
+                        profileEmailInput.value = data.email;
+                        welcomeMessage.textContent = data.username;
+                    }
+                });
+            };
+
+            if(profileForm) {
+                profileForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const updatedData = {
+                        username: profileUsernameInput.value,
+                        email: profileEmailInput.value
+                    };
+                    fetch('/api/profile/', {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Token ${token}`,
+                            'X-CSRFToken': csrftoken
+                        },
+                        body: JSON.stringify(updatedData)
+                    })
+                    .then(res => {
+                        if (!res.ok) {
+                            return res.json().then(errorData => { throw errorData; });
+                        }
+                        return res.json();
+                    })
+                    .then(data => {
+                        alert('Profile updated successfully!');
+                        welcomeMessage.textContent = data.username;
+                        localStorage.setItem('userName', data.username);
+                    })
+                    .catch(error => {
+                        const errorMessages = Object.entries(error).map(([key, value]) => `${key}: ${value.join(', ')}`).join('\n');
+                        alert(`Update failed:\n${errorMessages}`);
+                    });
+                });
+            }
+
+            const fetchBookings = () => {
+                fetch('/api/my-bookings/', {
+                    headers: { 'Authorization': `Token ${token}` }
+                })
+                .then(response => response.json())
+                .then(bookings => {
+                    const upcomingContainer = document.getElementById('upcoming');
+                    const pastContainer = document.getElementById('past');
+                    upcomingContainer.innerHTML = '<h2>Upcoming Bookings</h2>';
+                    pastContainer.innerHTML = '<h2>Past Bookings</h2>';
+                    const today = new Date();
+                    today.setHours(0,0,0,0);
+                    let hasUpcoming = false;
+                    let hasPast = false;
+
+                    bookings.forEach(booking => {
+                        const checkInDate = new Date(booking.check_in_date + 'T00:00:00');
+
+                        const bookingCardHTML = `
+                            <div class="booking-card" data-booking-id="${booking.id}" data-room-id="${booking.room.id}">
+                                <div class="booking-card-image"><img src="${booking.room.image_full_url}" alt="${booking.room.name}"></div>
+                                <div class="booking-card-details">
+                                    <h3>${booking.room.name}</h3>
+                                    <p><strong>Dates:</strong> ${booking.check_in_date} to ${booking.check_out_date}</p>
+                                    <p><strong>Guests:</strong> ${booking.guests}</p>
+                                    <p><strong>Booking ID:</strong> GBE${booking.id}</p>
+                                </div>
+                                <div class="booking-card-actions">
+                                    ${checkInDate >= today ? '<button class="action-button modify">Modify</button><button class="action-button cancel">Cancel</button>' : '<button class="action-button book-again">Book Again</button>'}
+                                </div>
+                            </div>
+                        `;
+
+                        if (checkInDate >= today) {
+                            upcomingContainer.innerHTML += bookingCardHTML;
+                            hasUpcoming = true;
+                        } else {
+                            pastContainer.innerHTML += bookingCardHTML;
+                            hasPast = true;
+                        }
+                    });
+
+                    if (!hasUpcoming) { upcomingContainer.innerHTML += '<p>You have no upcoming bookings.</p>'; }
+                    if (!hasPast) { pastContainer.innerHTML += '<p>You have no past bookings.</p>'; }
+                });
+            };
+
+            const handleCancelBooking = (bookingId) => {
+                if (!confirm('Are you sure you want to cancel this booking?')) return;
+                fetch(`/api/bookings/${bookingId}/cancel/`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Token ${token}`, 'X-CSRFToken': csrftoken },
+                })
+                .then(response => {
+                    if (response.ok) {
+                        alert('Booking cancelled successfully.');
+                        fetchBookings();
+                    } else {
+                        return response.json().then(data => { throw new Error(data.error) });
+                    }
+                }).catch(error => alert(`Cancellation failed: ${error.message}`));
+            };
+
+            const handleModifyBooking = (roomId) => {
+                alert("You will be redirected to the booking page. Please select your new dates and check for availability to confirm your modification.");
+                window.location.href = `/booking/?room=${roomId}`;
+            };
+
+            accountContent.addEventListener('click', (e) => {
+                const bookingCard = e.target.closest('.booking-card');
+                if (!bookingCard) return;
+                if (e.target.classList.contains('cancel')) handleCancelBooking(bookingCard.dataset.bookingId);
+                if (e.target.classList.contains('modify') || e.target.classList.contains('book-again')) handleModifyBooking(bookingCard.dataset.roomId);
+            });
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    if (e.target.id === 'logout-button') return;
+                    navLinks.forEach(navLink => navLink.classList.remove('active'));
+                    e.target.classList.add('active');
+                    const targetId = e.target.getAttribute('data-target');
+                    contentPanels.forEach(panel => {
+                        panel.classList.remove('active');
+                        if (panel.id === targetId) {
+                            panel.classList.add('active');
+                        }
+                    });
+                });
+            });
+
+            if(logoutButton) {
+                logoutButton.addEventListener('click', () => {
+                    if (confirm('Are you sure you want to logout?')) {
+                        localStorage.removeItem('authToken');
+                        localStorage.removeItem('userName');
+                        window.location.href = '/';
+                    }
+                });
+            }
+
+            updateHeader();
+            fetchBookings();
+            fetchProfile();
+        });
+    </script>
+</body>
+</html>

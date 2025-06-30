@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dining - The Grand Belgravia</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Raleway:wght@300;400;500&display=swap');
+        body{margin:0;font-family:'Raleway',sans-serif;background-color:#fdfdfd;color:#333;line-height:1.8;font-weight:300}
+        h1,h2,h3,h4{font-family:'Playfair Display',serif;color:#1a2938;font-weight:700}
+        .container{max-width:1000px;margin:auto;padding:0 20px}
+        .navbar{background:rgba(255,255,255,0.9);padding:1.5rem 2rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.1);display:flex;justify-content:space-between;align-items:center}
+        .navbar .logo{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#1a2938;text-decoration:none}
+        .navbar nav{display:flex;align-items:center}
+        .navbar nav a{color:#333;text-decoration:none;margin:0 15px;font-weight:400;transition:color 0.3s}
+        .navbar nav a:hover{color:#c9a96d}
+        .navbar .nav-buttons {display:flex;align-items:center;gap:1rem}
+        .navbar .cta-button{border:1px solid #c9a96d;padding:10px 20px;color:#c9a96d;text-decoration:none;transition:background-color 0.3s,color 0.3s;border-radius: 5px}
+        .navbar .cta-button:hover{background-color:#c9a96d;color:#fff}
+        .navbar .login-button, .navbar .account-link {
+            background: none;
+            border: none;
+            color: #333;
+            font-family: 'Raleway', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 10px 15px;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        .navbar .login-button:hover, .navbar .account-link:hover {color: #c9a96d}
+        .page-header{background-image:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),url('https://images.unsplash.com/photo-1552566626-52f8b828add9?q=80&w=2070');background-position:center;background-size:cover;color:#fff;padding:5rem 20px;text-align:center}
+        .page-header h1{font-size:3.5rem;color:#fff;margin:0}
+        .page-header p{font-size:1.2rem;color:#ccc;max-width:600px;margin:1rem auto 0;font-weight:300}
+        .dining-experiences{padding:6rem 0}
+        .venue-accordion{border:1px solid #e0e0e0;background-color:#fff;margin-bottom:1.5rem;box-shadow:0 5px 15px rgba(0,0,0,0.05);transition:box-shadow 0.3s; border-radius: 5px; overflow: hidden;}
+        .venue-accordion:hover{box-shadow:0 10px 25px rgba(0,0,0,0.08)}
+        .venue-trigger{display:flex;justify-content:space-between;align-items:center;width:100%;background:none;border:none;padding:2rem;text-align:left;cursor:pointer}
+        .venue-trigger h2{margin:0;font-size:2.2rem}
+        .venue-trigger .venue-subtitle{font-family:'Raleway',sans-serif;font-weight:400;color:#888;font-size:1rem}
+        .venue-trigger .plus-minus{font-size:2.5rem;font-family:'Playfair Display',serif;color:#c9a96d;transition:transform 0.4s ease}
+        .venue-trigger.active .plus-minus{transform:rotate(45deg)}
+        .venue-content{max-height:0;overflow:hidden;transition:max-height 0.5s ease-out,padding 0.5s ease-out;padding:0 2rem}
+        .venue-content-inner{padding:2rem 0;display:flex;gap:2rem;flex-wrap:wrap;background-size:cover;background-position:center;background-repeat:no-repeat;border-top:1px solid #eee}
+        .venue-description{flex:1 1 300px;position:relative;z-index:2; padding: 0 1rem;}
+        .venue-menu{flex:1 1 400px;position:relative;z-index:2; padding: 0 1rem;}
+        .venue-menu h4{font-size:1.3rem;color:#c9a96d;margin-bottom:1rem;border-bottom:1px solid #eee;padding-bottom:0.5rem}
+        .venue-menu p{margin:0 0 1rem 0;color:#555;font-style:italic}
+        #venue-breakfast{background-image:linear-gradient(rgba(255,255,255,0.92),rgba(255,255,255,0.92)),url('https://images.unsplash.com/photo-1525351484163-7529414344d8?q=80&w=2080')}
+        #venue-lunch{background-image:linear-gradient(rgba(255,255,255,0.92),rgba(255,255,255,0.92)),url('https://images.unsplash.com/photo-1565299543923-37dd37887442?q=80&w=1981')}
+        #venue-dinner{background-image:linear-gradient(rgba(255,255,255,0.92),rgba(255,255,255,0.92)),url("{% static 'images/dining-dinner.jpg' %}")}
+        #venue-bar{background-image:linear-gradient(rgba(255,255,255,0.92),rgba(255,255,255,0.92)),url("{% static 'images/dining-bar.jpg' %}")}
+        .fade-in-element{opacity:0;transform:translateY(20px);transition:opacity .8s ease-out,transform .8s ease-out}
+        .fade-in-element.visible{opacity:1;transform:translateY(0)}
+        .footer{background-color:#1a2938;color:#fff;padding:4rem 0;text-align:center}
+        .footer .container{max-width:800px}.footer .logo{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:1rem}.footer p{color:#ccc;margin-bottom:2rem;font-weight:300}.footer .social-links a{color:#fff;text-decoration:none;font-size:1.5rem;margin:0 15px;transition:color 0.3s}.footer .social-links a:hover{color:#c9a96d}.footer .footer-bottom{margin-top:3rem;padding-top:2rem;border-top:1px solid #3e4a56;font-size:0.9rem;color:#999}
+        .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(26,41,56,0.7);z-index:200;display:flex;justify-content:center;align-items:center;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility .4s ease}
+        .modal-overlay.active{opacity:1;visibility:visible}
+        .modal-content{background:#fff;padding:2.5rem 3rem;border-radius:5px;width:100%;max-width:450px;position:relative;box-shadow:0 10px 40px rgba(0,0,0,0.2);transform:translateY(20px);transition:transform .4s ease}
+        .modal-overlay.active .modal-content{transform:translateY(0)}
+        .modal-close{position:absolute;top:0.5rem;right:1rem;font-size:2.5rem;color:#ccc;cursor:pointer;border:none;background:none;line-height:1}
+        .modal-close:hover{color:#333}
+        .modal-header h2{text-align:center;margin-top:0;margin-bottom:2rem;font-size:2.2rem}
+        .modal-tabs{display:flex;margin-bottom:2rem;background-color:#f4f4f4;border-radius:5px;padding:5px}
+        .modal-tab{flex:1;padding:0.75rem;text-align:center;font-size:1rem;font-weight:500;cursor:pointer;color:#555;border-radius:5px;transition:background-color .3s,color .3s}
+        .modal-tab.active{background-color:#fff;color:#1a2938;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+        .modal-form{display:none}.modal-form.active{display:block}
+        .form-group{display:flex;flex-direction:column;margin-bottom:1.5rem}
+        .form-group label{margin-bottom:0.5rem;font-weight:500;color:#555}
+        .form-group input{padding:1rem;border:1px solid #ddd;border-radius:5px;font-size:1rem;font-family:'Raleway',sans-serif}
+        .modal-button{background-color:#c9a96d;color:#fff;padding:1rem;font-size:1.1rem;font-weight:500;transition:background-color .3s;display:block;width:100%;border:none;border-radius:5px;cursor:pointer;text-align:center;margin-top:1rem}
+        .modal-button:hover{background-color:#b8985f}
+        .form-link{font-size:0.9rem;text-align:right;margin-top:-1rem;margin-bottom:1.5rem}
+        .form-link a{color:#c9a96d;text-decoration:none}
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="/" class="logo">The Grand Belgravia</a>
+        <nav>
+            <a href="/#about">About</a>
+            <a href="/rooms/">Rooms</a>
+            <a href="/dining/">Dining</a>
+            <a href="/spa/">Spa</a>
+            <a href="/#contact">Contact</a>
+        </nav>
+        <div class="nav-buttons">
+            <div id="user-actions">
+                </div>
+            <a href="/booking/" class="cta-button">Book Now</a>
+        </div>
+    </header>
+
+    <main>
+        <section class="page-header">
+            <h1>Dining Experiences</h1>
+            <p>A collection of culinary destinations, each with its own unique character.</p>
+        </section>
+        <section class="dining-experiences">
+            <div class="container">
+                <div class="venue-accordion fade-in-element">
+                    <button class="venue-trigger"><div><h2>The Orangerie</h2><span class="venue-subtitle">Breakfast & Brunch</span></div><div class="plus-minus">+</div></button>
+                    <div class="venue-content"><div class="venue-content-inner" id="venue-breakfast"><div class="venue-description"><p>Bathed in morning light, The Orangerie offers a serene start to your day. Enjoy artisanal pastries, classic cooked breakfasts, and freshly squeezed juices in a bright, verdant setting.</p></div><div class="venue-menu"><h4>Sample Menu</h4><p><strong>Belgravia Full English:</strong> Cumberland sausage, smoked bacon, eggs your way, mushroom, tomato.</p><p><strong>Smashed Avocado Toast:</strong> Poached eggs, chili flakes, toasted sourdough.</p><p><strong>Buttermilk Pancakes:</strong> With maple syrup and fresh berries.</p></div></div></div>
+                </div>
+                <div class="venue-accordion fade-in-element">
+                    <button class="venue-trigger"><div><h2>The Terrace</h2><span class="venue-subtitle">Lunch & All-Day Dining</span></div><div class="plus-minus">+</div></button>
+                    <div class="venue-content"><div class="venue-content-inner" id="venue-lunch"><div class="venue-description"><p>Our relaxed, open-air Terrace is the perfect spot for a casual lunch or afternoon refreshment. The menu features light bites, crisp salads, and classic bistro fare.</p></div><div class="venue-menu"><h4>Sample Menu</h4><p><strong>Club Sandwich:</strong> Grilled chicken, bacon, egg mayonnaise, and fries.</p><p><strong>Caesar Salad:</strong> With your choice of grilled prawns or chicken.</p><p><strong>Margherita Pizza:</strong> Fresh from our stone-baked oven.</p></div></div></div>
+                </div>
+                <div class="venue-accordion fade-in-element">
+                    <button class="venue-trigger"><div><h2>The Oak Room</h2><span class="venue-subtitle">Fine Dining</span></div><div class="plus-minus">+</div></button>
+                    <div class="venue-content"><div class="venue-content-inner" id="venue-dinner"><div class="venue-description"><p>An intimate and sophisticated atmosphere for an unforgettable evening. The Oak Room is our signature restaurant, showcasing modern European cuisine, an extensive wine list, and impeccable service.</p></div><div class="venue-menu"><h4>From the Menu</h4><p><strong>Dover Sole Meunière:</strong> Served with brown butter, parsley, and new potatoes.</p><p><strong>Rack of Lamb:</strong> Herb-crusted, with potato dauphinoise and a red wine jus.</p><p><strong>Wild Mushroom & Truffle Linguine:</strong> Handmade pasta with a creamy parmesan and truffle sauce.</p></div></div></div>
+                </div>
+                <div class="venue-accordion fade-in-element">
+                    <button class="venue-trigger"><div><h2>The Onyx Bar</h2><span class="venue-subtitle">Cocktails & Spirits</span></div><div class="plus-minus">+</div></button>
+                    <div class="venue-content"><div class="venue-content-inner" id="venue-bar"><div class="venue-description"><p>Discover an extensive list of vintage wines, classic cocktails, and artisanal spirits in a moody, sophisticated setting. The perfect spot for a pre-dinner apéritif or a late-night digestif.</p></div><div class="venue-menu"><h4>From the Bar</h4><p><strong>The Belgravia Old Fashioned:</strong> Premium bourbon, orange bitters, demerara.</p><p><strong>Classic Martini:</strong> Your choice of gin or vodka, prepared to your liking.</p><p><strong>Vintage Champagne Selection:</strong> Ask your server for today's featured bottle.</p></div></div></div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer id="contact" class="footer">
+       <div class="container">
+            <div class="logo">The Grand Belgravia</div>
+            <p>123 Park Lane, London, W1K 7TN, United Kingdom<br>+44 20 1234 5678 | reservations@grandbelgravia.com</p>
+            <div class="social-links"><a href="#" aria-label="Instagram">IG</a><a href="#" aria-label="Facebook">FB</a><a href="#" aria-label="Twitter">TW</a></div>
+            <div class="footer-bottom">&copy; 2025 The Grand Belgravia. All Rights Reserved.</div>
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close-btn">&times;</button>
+            <div class="modal-header"><h2>Welcome</h2></div>
+            <div class="modal-tabs"><div class="modal-tab active" id="login-tab">Login</div><div class="modal-tab" id="signup-tab">Sign Up</div></div>
+            <form class="modal-form active" id="login-form">
+                <div class="form-group"><label for="login-username">Username</label><input type="text" id="login-username" required></div>
+                <div class="form-group"><label for="login-password">Password</label><input type="password" id="login-password" required></div>
+                <div class="form-link"><a href="#">Forgot Password?</a></div>
+                <button type="submit" class="modal-button">Login</button>
+            </form>
+            <form class="modal-form" id="signup-form">
+                <div class="form-group"><label for="signup-username">Username</label><input type="text" id="signup-username" required></div>
+                <div class="form-group"><label for="signup-email">Email</label><input type="email" id="signup-email" required></div>
+                <div class="form-group"><label for="signup-password">Password</label><input type="password" id="signup-password" required></div>
+                <button type="submit" class="modal-button">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const authModal = document.getElementById('auth-modal');
+            const userActionsContainer = document.getElementById('user-actions');
+
+            const getCookie = (name) => {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            const csrftoken = getCookie('csrftoken');
+
+            const updateHeader = () => {
+                if (localStorage.getItem('authToken')) {
+                    userActionsContainer.innerHTML = `<a href="/account/" class="account-link">My Account</a>`;
+                } else {
+                    userActionsContainer.innerHTML = `<button class="login-button">Login</button>`;
+                    const loginButton = userActionsContainer.querySelector('.login-button');
+                    if (loginButton) loginButton.addEventListener('click', openModal);
+                }
+            };
+            const openModal = () => { if (authModal) authModal.classList.add('active'); };
+            const closeModal = () => { if (authModal) authModal.classList.remove('active'); };
+            updateHeader();
+
+            if (authModal) {
+                document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+                authModal.addEventListener('click', (e) => { if (e.target === authModal) closeModal(); });
+
+                const loginTab = document.getElementById('login-tab');
+                const signupTab = document.getElementById('signup-tab');
+                const loginForm = document.getElementById('login-form');
+                const signupForm = document.getElementById('signup-form');
+
+                loginTab.addEventListener('click', () => {
+                    loginTab.classList.add('active'); signupTab.classList.remove('active');
+                    loginForm.classList.add('active'); signupForm.classList.remove('active');
+                });
+                signupTab.addEventListener('click', () => {
+                    signupTab.classList.add('active'); loginTab.classList.remove('active');
+                    signupForm.classList.add('active'); loginForm.classList.remove('active');
+                });
+
+                signupForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const username = document.getElementById('signup-username').value;
+                    const email = document.getElementById('signup-email').value;
+                    const password = document.getElementById('signup-password').value;
+
+                    fetch('/api/signup/', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrftoken},
+                        body: JSON.stringify({ username, email, password })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.username) {
+                            alert('Account created successfully! Please log in.');
+                            loginTab.click();
+                        } else {
+                            alert(Object.entries(data).map(([key, value]) => `${key}: ${value.join(', ')}`).join('\n'));
+                        }
+                    });
+                });
+
+                loginForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    const username = document.getElementById('login-username').value;
+                    const password = document.getElementById('login-password').value;
+
+                    fetch('/api/login/', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json', 'X-CSRFToken': csrftoken},
+                        body: JSON.stringify({ username, password })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.token) {
+                            localStorage.setItem('authToken', data.token);
+                            localStorage.setItem('userName', username);
+                            alert('Login successful!');
+                            closeModal();
+                            updateHeader();
+                        } else {
+                            alert(data.error || 'Login failed. Please check your username and password.');
+                        }
+                    });
+                });
+            }
+
+            const accordions = document.querySelectorAll('.venue-accordion');
+            accordions.forEach(accordion => {
+                const trigger = accordion.querySelector('.venue-trigger');
+                const content = accordion.querySelector('.venue-content');
+                trigger.addEventListener('click', () => {
+                    const isOpen = trigger.classList.contains('active');
+                    accordions.forEach(otherAccordion => {
+                        otherAccordion.querySelector('.venue-trigger').classList.remove('active');
+                        otherAccordion.querySelector('.venue-content').style.maxHeight = null;
+                    });
+                    if (!isOpen) {
+                        trigger.classList.add('active');
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                });
+            });
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            const elementsToFadeIn = document.querySelectorAll('.fade-in-element');
+            elementsToFadeIn.forEach((el) => observer.observe(el));
+        });
+    </script>
+</body>
+</html>

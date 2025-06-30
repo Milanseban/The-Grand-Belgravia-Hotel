@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmed - The Grand Belgravia</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Raleway:wght@300;400;500&display=swap');
+
+        body{margin:0;font-family:'Raleway',sans-serif;background-color:#f4f4f4;color:#333;line-height:1.6;font-weight:300;}
+        h1,h2,h3,h4{font-family:'Playfair+Display',serif;color:#1a2938;font-weight:700}
+        .navbar{background:rgba(255,255,255,0.9);padding:1.5rem 2rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.1);display:flex;justify-content:space-between;align-items:center}
+        .navbar .logo{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#1a2938;text-decoration:none}
+        .navbar nav{display:flex;align-items:center}
+        .navbar nav a{color:#333;text-decoration:none;margin:0 15px;font-weight:400;transition:color 0.3s}
+        .navbar nav a:hover{color:#c9a96d}
+        .navbar .nav-buttons {display:flex;align-items:center;gap:1rem}
+        .navbar .cta-button{border:1px solid #c9a96d;padding:10px 20px;color:#c9a96d;text-decoration:none;transition:background-color 0.3s,color 0.3s;border-radius:5px}
+        .navbar .cta-button:hover{background-color:#c9a96d;color:#fff}
+        .navbar .login-button, .navbar .account-link {
+            background:none;
+            border:none;
+            color:#333;
+            font-family:'Raleway',sans-serif;
+            font-size:1rem;
+            font-weight:500;
+            cursor:pointer;
+            padding:10px 15px;
+            text-decoration:none;
+            transition:color 0.3s;
+        }
+        .navbar .login-button:hover, .navbar .account-link:hover {color:#c9a96d}
+
+        .thank-you-container{display:flex;justify-content:center;align-items:center;min-height:80vh;padding:4rem 2rem;text-align:center;background-image:linear-gradient(rgba(244,244,244,0.9),rgba(244,244,244,0.9)),url('https://images.unsplash.com/photo-1596436889106-be35e843f974?q=80&w=2070');background-size:cover;background-position:center}
+        .confirmation-box{background:#fff;max-width:550px;width:100%;padding:4rem;box-shadow:0 15px 50px rgba(0,0,0,0.1);border-radius:5px}
+        .confirmation-box .icon{color:#c9a96d;font-size:4rem;line-height:1}
+        .confirmation-box h1{font-size:2.5rem;margin:1.5rem 0 1rem 0}
+        .confirmation-box p{font-size:1.1rem;color:#555;margin-bottom:2.5rem}
+        .button-home{background-color:#1a2938;color:#fff;padding:1rem 3rem;text-decoration:none;font-size:1rem;font-weight:500;transition:background-color 0.3s;display:inline-block;border-radius:5px}
+        .button-home:hover{background-color:#333}
+
+        .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(26,41,56,0.7);z-index:200;display:flex;justify-content:center;align-items:center;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility .4s ease}
+        .modal-overlay.active{opacity:1;visibility:visible}
+        .modal-content{background:#fff;padding:2.5rem 3rem;border-radius:5px;width:100%;max-width:450px;position:relative;box-shadow:0 10px 40px rgba(0,0,0,0.2);transform:translateY(20px);transition:transform .4s ease}
+        .modal-overlay.active .modal-content{transform:translateY(0)}
+        .modal-close{position:absolute;top:0.5rem;right:1rem;font-size:2.5rem;color:#ccc;cursor:pointer;border:none;background:none;line-height:1}
+        .modal-close:hover{color:#333}
+        .modal-header h2{text-align:center;margin-top:0;margin-bottom:2rem;font-size:2.2rem}
+        .modal-tabs{display:flex;margin-bottom:2rem;background-color:#f4f4f4;border-radius:5px;padding:5px}
+        .modal-tab{flex:1;padding:0.75rem;text-align:center;font-size:1rem;font-weight:500;cursor:pointer;color:#555;border-radius:5px;transition:background-color .3s,color .3s}
+        .modal-tab.active{background-color:#fff;color:#1a2938;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+        .modal-form{display:none}.modal-form.active{display:block}
+        .modal-form .form-group{margin-bottom:1.5rem}
+        .modal-button{background-color:#c9a96d;color:#fff;padding:1rem;font-size:1.1rem;font-weight:500;transition:background-color .3s;display:block;width:100%;border:none;border-radius:5px;cursor:pointer;text-align:center;margin-top:1rem}
+        .modal-button:hover{background-color:#b8985f}
+        .form-link{font-size:0.9rem;text-align:right;margin-top:-1rem;margin-bottom:1.5rem}
+        .form-link a{color:#c9a96d;text-decoration:none}
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <a href="/" class="logo">The Grand Belgravia</a>
+        <nav>
+            <a href="/#about">About</a>
+            <a href="/rooms/">Rooms</a>
+            <a href="/dining/">Dining</a>
+            <a href="/spa/">Spa</a>
+            <a href="/#contact">Contact</a>
+        </nav>
+        <div class="nav-buttons">
+            <div id="user-actions">
+                </div>
+            <a href="/booking/" class="cta-button">Book Now</a>
+        </div>
+    </header>
+
+    <main>
+        <div class="thank-you-container">
+            <div class="confirmation-box">
+                <div class="icon">&#10003;</div>
+                <h1>Thank You, <span id="guest-name">Guest</span>!</h1>
+                <p>Your booking at The Grand Belgravia is confirmed. We have sent a confirmation email with the details of your stay. We are delighted to be welcoming you and look forward to an unforgettable experience.</p>
+                <a href="/" class="button-home">Return to Homepage</a>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userActionsContainer = document.getElementById('user-actions');
+
+            const updateHeader = () => {
+                if (localStorage.getItem('authToken')) {
+                    userActionsContainer.innerHTML = `<a href="/account/" class="account-link">My Account</a>`;
+                } else {
+                    userActionsContainer.innerHTML = `<a href="/" class="login-button">Login</a>`;
+                }
+            };
+
+            const firstName = localStorage.getItem('firstName');
+            if (firstName) {
+                document.getElementById('guest-name').textContent = firstName;
+            }
+
+            localStorage.removeItem('checkinDate');
+            localStorage.removeItem('checkoutDate');
+            localStorage.removeItem('adults');
+            localStorage.removeItem('children');
+            localStorage.removeItem('roomValue');
+            localStorage.removeItem('roomTypeName');
+            localStorage.removeItem('firstName');
+
+            updateHeader();
+        });
+    </script>
+</body>
+</html>

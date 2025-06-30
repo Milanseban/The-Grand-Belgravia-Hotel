@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Your Stay - The Grand Belgravia</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Raleway:wght@300;400;500&display=swap');
+        body{margin:0;font-family:'Raleway',sans-serif;background-color:#fdfdfd;color:#333;line-height:1.8;font-weight:300}
+        h1,h2,h3,h4{font-family:'Playfair+Display',serif;color:#1a2938;font-weight:700}
+        .container{max-width:1100px;margin:auto;padding:0 20px}
+        .navbar{background:rgba(255,255,255,0.9);padding:1.5rem 2rem;position:sticky;top:0;z-index:100;box-shadow:0 2px 10px rgba(0,0,0,0.1);display:flex;justify-content:space-between;align-items:center}
+        .navbar .logo{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:700;color:#1a2938;text-decoration:none}
+        .navbar nav{display:flex;align-items:center}
+        .navbar nav a{color:#333;text-decoration:none;margin:0 15px;font-weight:400;transition:color 0.3s}
+        .navbar nav a:hover{color:#c9a96d}
+        .navbar .nav-buttons {display:flex;align-items:center;gap:1rem}
+        .navbar .cta-button{border:1px solid #c9a96d;padding:10px 20px;color:#c9a96d;text-decoration:none;transition:background-color 0.3s,color 0.3s;border-radius:5px}
+        .navbar .cta-button:hover{background-color:#c9a96d;color:#fff}
+        .navbar .login-button, .navbar .account-link {
+            background:none;
+            border:none;
+            color:#333;
+            font-family:'Raleway',sans-serif;
+            font-size:1rem;
+            font-weight:500;
+            cursor:pointer;
+            padding:10px 15px;
+            text-decoration:none;
+            transition:color 0.3s;
+        }
+        .navbar .login-button:hover, .navbar .account-link:hover {color:#c9a96d}
+        .page-header{background-image:linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.5)),url('https://images.unsplash.com/photo-1562778612-e1e073d31789?q=80&w=1964');background-position:center;background-size:cover;color:#fff;padding:5rem 20px;text-align:center}
+        .page-header h1{font-size:3.5rem;color:#fff;margin:0}
+        .page-header p{font-size:1.2rem;color:#ccc;max-width:600px;margin:1rem auto 0;font-weight:300}
+        .booking-section{padding:6rem 0}
+        .booking-form-wrapper{max-width:800px;margin:0 auto;background:#fff;padding:3rem 4rem;box-shadow:0 10px 40px rgba(0,0,0,0.08);border-radius:5px}
+        .booking-form-wrapper h2{text-align:center;font-size:2.8rem;margin-top:0;margin-bottom:3rem}
+        .form-row{display:flex;gap:2rem;margin-bottom:2rem}
+        .form-group{flex:1;display:flex;flex-direction:column}
+        .form-group label{margin-bottom:0.5rem;font-weight:500;color:#555}
+        .form-group input,.form-group select{padding:1rem;border:1px solid #ddd;border-radius:5px;font-size:1rem;font-family:'Raleway',sans-serif}
+        input.flatpickr-input{background-color:#fff;cursor:pointer}
+        .button-submit{background-color:#c9a96d;color:#fff;padding:1rem;text-decoration:none;font-size:1.1rem;font-weight:500;transition:background-color 0.3s;display:block;width:100%;border:none;border-radius:5px;cursor:pointer;text-align:center;margin-top:2rem}
+        .button-submit:hover{background-color:#b8985f}
+        .footer{background-color:#1a2938;color:#fff;padding:4rem 0;text-align:center}
+        .footer .container{max-width:800px}.footer .logo{font-family:'Playfair Display',serif;font-size:2rem;margin-bottom:1rem}.footer p{color:#ccc;margin-bottom:2rem;font-weight:300}.footer .social-links a{color:#fff;text-decoration:none;font-size:1.5rem;margin:0 15px;transition:color 0.3s}.footer .social-links a:hover{color:#c9a96d}.footer .footer-bottom{margin-top:3rem;padding-top:2rem;border-top:1px solid #3e4a56;font-size:0.9rem;color:#999}
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #c9a96d; border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: none; margin: 1rem auto;}
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(26,41,56,0.7);z-index:200;display:flex;justify-content:center;align-items:center;opacity:0;visibility:hidden;transition:opacity .4s ease,visibility .4s ease}
+        .modal-overlay.active{opacity:1;visibility:visible}
+        .modal-content{background:#fff;padding:2.5rem 3rem;border-radius:5px;width:100%;max-width:450px;position:relative;box-shadow:0 10px 40px rgba(0,0,0,0.2);transform:translateY(20px);transition:transform .4s ease}
+        .modal-overlay.active .modal-content{transform:translateY(0)}
+        .modal-close{position:absolute;top:0.5rem;right:1rem;font-size:2.5rem;color:#ccc;cursor:pointer;border:none;background:none;line-height:1}
+        .modal-close:hover{color:#333}
+        .modal-header h2{text-align:center;margin-top:0;margin-bottom:2rem;font-size:2.2rem}
+        .modal-tabs{display:flex;margin-bottom:2rem;background-color:#f4f4f4;border-radius:5px;padding:5px}
+        .modal-tab{flex:1;padding:0.75rem;text-align:center;font-size:1rem;font-weight:500;cursor:pointer;color:#555;border-radius:5px;transition:background-color .3s,color .3s}
+        .modal-tab.active{background-color:#fff;color:#1a2938;box-shadow:0 2px 10px rgba(0,0,0,0.1)}
+        .modal-form{display:none}.modal-form.active{display:block}
+        .modal-form .form-group{margin-bottom:1.5rem}
+        .modal-button{background-color:#c9a96d;color:#fff;padding:1rem;font-size:1.1rem;font-weight:500;transition:background-color .3s;display:block;width:100%;border:none;border-radius:5px;cursor:pointer;text-align:center;margin-top:1rem}
+        .modal-button:hover{background-color:#b8985f}
+        .form-link{font-size:0.9rem;text-align:right;margin-top:-1rem;margin-bottom:1.5rem}
+        .form-link a{color:#c9a96d;text-decoration:none}
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <a href="/" class="logo">The Grand Belgravia</a>
+        <nav>
+            <a href="/#about">About</a>
+            <a href="/rooms/">Rooms</a>
+            <a href="/dining/">Dining</a>
+            <a href="/spa/">Spa</a>
+            <a href="/#contact">Contact</a>
+        </nav>
+        <div class="nav-buttons">
+            <div id="user-actions"></div>
+            <a href="/booking/" class="cta-button">Book Now</a>
+        </div>
+    </header>
+    <main>
+        <section class="page-header">
+            <h1>Reserve Your Stay</h1><p>We invite you to find your sanctuary. Please select your details below.</p>
+        </section>
+        <section class="booking-section">
+            <div class="container">
+                <div class="booking-form-wrapper">
+                    <h2>Check Availability</h2>
+                    <form id="booking-form">
+                        <div class="form-row">
+                            <div class="form-group"><label for="checkin">Check-in Date</label><input type="text" id="checkin" name="checkin" placeholder="Select Date" required></div>
+                            <div class="form-group"><label for="checkout">Check-out Date</label><input type="text" id="checkout" name="checkout" placeholder="Select Date" required></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group"><label for="adults">Adults</label><select id="adults" name="adults"><option value="1">1 Adult</option><option value="2" selected>2 Adults</option><option value="3">3 Adults</option><option value="4">4 Adults</option></select></div>
+                            <div class="form-group"><label for="children">Children</label><select id="children" name="children"><option value="0" selected>0 Children</option><option value="1">1 Child</option><option value="2">2 Children</option><option value="3">3 Children</option></select></div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group" style="width: 100%;"><label for="room-type">Room Type</label><select id="room-type" name="room_type" required><option value="" disabled selected>-- Select a Room --</option><option value="1">Deluxe King Room</option><option value="2">Junior Suite</option><option value="3">Executive Suite</option><option value="4">Family Room</option><option value="5">The Belgravia Penthouse</option></select></div>
+                        </div>
+                        <div id="form-buttons">
+                             <button type="button" id="check-availability-btn" class="button-submit">Check Availability</button>
+                             <button type="submit" id="proceed-btn" class="button-submit" style="display:none;">Proceed to Confirmation</button>
+                        </div>
+                        <div class="loader" id="loader"></div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+    <footer id="contact" class="footer">
+       <div class="container">
+            <div class="logo">The Grand Belgravia</div>
+            <p>123 Park Lane, London, W1K 7TN, United Kingdom<br>+44 20 1234 5678 | reservations@grandbelgravia.com</p>
+            <div class="social-links"><a href="#" aria-label="Instagram">IG</a><a href="#" aria-label="Facebook">FB</a><a href="#" aria-label="Twitter">TW</a></div>
+            <div class="footer-bottom">&copy; 2025 The Grand Belgravia. All Rights Reserved.</div>
+        </div>
+    </footer>
+
+    <div class="modal-overlay" id="auth-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close-btn">&times;</button>
+            <div class="modal-header"><h2>Welcome</h2></div>
+            <div class="modal-tabs"><div class="modal-tab active" id="login-tab">Login</div><div class="modal-tab" id="signup-tab">Sign Up</div></div>
+            <form class="modal-form active" id="login-form">
+                <div class="form-group"><label for="login-username">Username</label><input type="text" id="login-username" required></div>
+                <div class="form-group"><label for="login-password">Password</label><input type="password" id="login-password" required></div>
+                <div class="form-link"><a href="#">Forgot Password?</a></div>
+                <button type="submit" class="modal-button">Login</button>
+            </form>
+            <form class="modal-form" id="signup-form">
+                <div class="form-group"><label for="signup-username">Username</label><input type="text" id="signup-username" required></div>
+                <div class="form-group"><label for="signup-email">Email</label><input type="email" id="signup-email" required></div>
+                <div class="form-group"><label for="signup-password">Password</label><input type="password" id="signup-password" required></div>
+                <button type="submit" class="modal-button">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const userActionsContainer = document.getElementById('user-actions');
+            const authModal = document.getElementById('auth-modal');
+            const checkAvailabilityBtn = document.getElementById('check-availability-btn');
+            const proceedBtn = document.getElementById('proceed-btn');
+            const loader = document.getElementById('loader');
+            const bookingForm = document.getElementById('booking-form');
+
+            const getCookie = (name) => {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+            const csrftoken = getCookie('csrftoken');
+
+            const updateHeader = () => {
+                if (localStorage.getItem('authToken')) {
+                    userActionsContainer.innerHTML = `<a href="/account/" class="account-link">My Account</a>`;
+                } else {
+                    userActionsContainer.innerHTML = `<button class="login-button">Login</button>`;
+                    const loginButton = userActionsContainer.querySelector('.login-button');
+                    if (loginButton) loginButton.addEventListener('click', openModal);
+                }
+            };
+
+            const openModal = () => { if (authModal) authModal.classList.add('active'); };
+            const closeModal = () => { if (authModal) authModal.classList.remove('active'); };
+            updateHeader();
+
+            if (authModal) {
+                document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+                authModal.addEventListener('click', (e) => { if (e.target === authModal) closeModal(); });
+                // ... (add tab and form logic here if needed)
+            }
+
+            flatpickr("#checkin", { altInput: true, altFormat: "F j, Y", dateFormat: "Y-m-d", minDate: "today" });
+            flatpickr("#checkout", { altInput: true, altFormat: "F j, Y", dateFormat: "Y-m-d", minDate: "today" });
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const roomQueryParam = urlParams.get('room');
+            if (roomQueryParam) {
+                // We map the string from the URL to the room ID value
+                const roomMap = { "deluxe": "1", "junior": "2", "executive": "3", "family": "4", "penthouse": "5"};
+                document.getElementById('room-type').value = roomMap[roomQueryParam];
+            }
+
+            checkAvailabilityBtn.addEventListener('click', () => {
+                loader.style.display = 'block';
+                checkAvailabilityBtn.style.display = 'none';
+                proceedBtn.style.display = 'none';
+
+                const checkinDate = document.getElementById('checkin').value;
+                const checkoutDate = document.getElementById('checkout').value;
+                const roomSelect = document.getElementById('room-type');
+                const roomId = roomSelect.value;
+
+                if (!checkinDate || !checkoutDate || !roomId) {
+                    alert('Please select dates and a room type.');
+                    loader.style.display = 'none';
+                    checkAvailabilityBtn.style.display = 'block';
+                    return;
+                }
+
+                fetch('/api/check-availability/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrftoken },
+                    body: JSON.stringify({ check_in_date: checkinDate, check_out_date: checkoutDate })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    loader.style.display = 'none';
+                    const isAvailable = data.some(room => room.id.toString() === roomId);
+
+                    if (isAvailable) {
+                        alert('This room is available! You may now proceed.');
+                        proceedBtn.style.display = 'block';
+                    } else {
+                        alert('Sorry, this room type is not available for the selected dates. Please try another room or different dates.');
+                        checkAvailabilityBtn.style.display = 'block';
+                    }
+                });
+            });
+
+            bookingForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const adults = document.getElementById('adults').value;
+                const children = document.getElementById('children').value;
+                const roomSelect = document.getElementById('room-type');
+
+                localStorage.setItem('checkinDate', document.getElementById('checkin').value);
+                localStorage.setItem('checkoutDate', document.getElementById('checkout').value);
+                localStorage.setItem('adults', adults);
+                localStorage.setItem('children', children);
+                localStorage.setItem('roomId', roomSelect.value);
+                localStorage.setItem('roomTypeName', roomSelect.options[roomSelect.selectedIndex].text);
+
+                window.location.href = '/confirmation/';
+            });
+        });
+    </script>
+</body>
+</html>
