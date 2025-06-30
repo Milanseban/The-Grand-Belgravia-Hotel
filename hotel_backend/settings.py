@@ -1,9 +1,11 @@
+# hotel_backend/settings.py
+
 from pathlib import Path
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 ENVIRONMENT = os.environ.get('ENVIRONMENT', 'development')
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-development-fallback-key')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-development-fallback-for-local-use-only')
 DEBUG = ENVIRONMENT == 'development'
 ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1']
 
@@ -53,10 +55,10 @@ DATABASES = {
     }
 }
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
