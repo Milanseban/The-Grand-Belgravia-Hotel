@@ -1,14 +1,12 @@
 #!/bin/bash
 
-# Exit on error
+# Exit on any error
 set -e
 
-# Upgrade pip and install dependencies
-pip install --upgrade pip
+# Install dependencies
 pip install -r requirements.txt
 
-# Copy the local database to the writable /tmp directory
-# This ensures our initial data (rooms, admin user) is available on Vercel
+# Copy the database to the writable /tmp directory for the live server
 cp db.sqlite3 /tmp/db.sqlite3
 
 # Run Django management commands
