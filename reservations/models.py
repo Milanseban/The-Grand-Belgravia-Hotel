@@ -1,3 +1,4 @@
+# reservations/models.py
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -11,7 +12,7 @@ class Room(models.Model):
 
     @property
     def image_url(self):
-        # Maps room names to their respective image files in the assets folder
+        # This maps room names to their respective image files
         image_map = {
             "Junior Suite": 'images/image3.jpeg',
             "Family Room": 'images/image2.jpg',

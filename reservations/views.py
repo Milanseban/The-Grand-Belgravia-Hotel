@@ -2,11 +2,10 @@
 
 from django.shortcuts import render
 from django.contrib.auth import authenticate, get_user_model
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from rest_framework.permissions import IsAuthenticated
 from .models import Room, Booking
 from .serializers import RoomSerializer, UserSerializer, BookingSerializer, ProfileSerializer
 from django.db.models import Q, Count
@@ -44,7 +43,7 @@ class LoginView(APIView):
             return Response({'error': 'Invalid Credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
 class ProfileView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     def get(self, request):
         serializer = ProfileSerializer(request.user, context={'request': request})
         return Response(serializer.data)
@@ -78,29 +77,30 @@ class CheckAvailabilityView(APIView):
         serializer = RoomSerializer(available_rooms, many=True, context={'request': request})
         return Response(serializer.data)
 
+# --- THIS IS THE CORRECTED BOOKING CREATION VIEW ---
 class CreateBookingView(generics.CreateAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.AllowAny] # Allow guests to book
     serializer_class = BookingSerializer
+
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        # If the user is authenticated, associate the booking with their account
+        if self.request.user.is_authenticated:
+            serializer.save(user=self.request.user)
+        else:
+            # For guests, the name and email are already in the serializer data
+            # so we just save it without a user association.
+            serializer.save()
 
-# --- THIS IS THE CORRECTED BOOKING HISTORY VIEW ---
 class BookingHistoryView(generics.ListAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     serializer_class = BookingSerializer
-
     def get_queryset(self):
         return Booking.objects.filter(user=self.request.user).order_by('-check_in_date')
-
-    # This new method correctly provides the necessary context to the serializer
-    # so it can build the full image URLs.
     def get_serializer_context(self):
-        context = super(BookingHistoryView, self).get_serializer_context()
-        context.update({"request": self.request})
-        return context
+        return {'request': self.request}
 
 class BookingCancelView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
     def delete(self, request, pk):
         try:
             booking = Booking.objects.get(pk=pk, user=request.user)
