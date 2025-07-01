@@ -3,7 +3,7 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 ENVIRONMENT = os.environ.get('ENVIRONMENT', 'development')
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-local-dev-key-is-not-secure')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-local-dev-key')
 DEBUG = ENVIRONMENT == 'development'
 ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1']
 
