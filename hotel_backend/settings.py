@@ -3,7 +3,7 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 ENVIRONMENT = os.environ.get('ENVIRONMENT', 'development')
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-local-dev-key')
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-local-dev-key-is-not-secure')
 DEBUG = ENVIRONMENT == 'development'
 ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1']
 
@@ -75,7 +75,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'assets')]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles_build")
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
