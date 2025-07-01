@@ -1,3 +1,5 @@
+# hotel_backend/settings.py
+
 from pathlib import Path
 import os
 
@@ -7,6 +9,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-development-fallback-
 DEBUG = ENVIRONMENT == 'development'
 ALLOWED_HOSTS = ['.vercel.app', '127.0.0.1']
 
+# Application definition
 INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.admin',
@@ -46,12 +49,26 @@ TEMPLATES = [
     },
 ]
 WSGI_APPLICATION = 'hotel_backend.wsgi.application'
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+
+# --- THIS IS THE CORRECTED DATABASE CONFIGURATION ---
+# It checks if we are on Vercel. If so, it uses the /tmp directory.
+# Otherwise, it uses the local db.sqlite3 file.
+if ENVIRONMENT == 'production':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': '/tmp/db.sqlite3',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+
+
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -64,7 +81,7 @@ USE_I18N = True
 USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'assets')]
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles_build") # Vercel will use this folder
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles_build")
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 REST_FRAMEWORK = {
