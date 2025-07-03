@@ -1,10 +1,7 @@
-# reservations/urls.py
-
 from django.urls import path
 from .views import *
 
 urlpatterns = [
-    # --- API Endpoints ---
     path('api/signup/', SignupView.as_view(), name='signup'),
     path('api/login/', LoginView.as_view(), name='login'),
     path('api/profile/', ProfileView.as_view(), name='profile'),
@@ -12,9 +9,7 @@ urlpatterns = [
     path('api/check-availability/', CheckAvailabilityView.as_view(), name='check-availability'),
     path('api/bookings/create/', CreateBookingView.as_view(), name='create-booking'),
     path('api/my-bookings/', BookingHistoryView.as_view(), name='my-bookings'),
-    path('api/bookings/<int:pk>/cancel/', BookingCancelView.as_view(), name='cancel-booking'), # <-- ADD THIS LINE
-
-    # --- Page-serving URLs ---
+    path('api/bookings/<int:pk>/cancel/', BookingCancelView.as_view(), name='cancel-booking'),
     path('rooms/', rooms_view, name='rooms'),
     path('dining/', dining_view, name='dining'),
     path('spa/', spa_view, name='spa'),
