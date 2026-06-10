@@ -135,7 +135,7 @@ The application will be live at `http://127.0.0.1:8000/`.
 
 ---
 
-## ✍️ Author
+##  Author
 
 **Milan Sebastian**
 www.linkedin.com/in/milan-sebastian-a76236251
